@@ -1,0 +1,40 @@
+id: title_pulse
+version: 1
+name: Title Pulse
+description: >-
+  Attention health-check: daily series, percentile rank vs. a same-genre
+  cohort each month, anomaly days, and 28-day momentum.
+
+steps:
+  - id: q1_daily_series
+    title: Daily attention series
+    param_types: {entity_id: wikidata_id, start_date: date, end_date: date}
+    sql: |
+      SELECT date, sum(views) AS views
+      FROM cinesignal.entity_attention_daily
+      WHERE wikidata_id = {{entity_id}}
+        AND date BETWEEN {{start_date}} AND {{end_date}}
+      GROUP BY date
+      ORDER BY date
+
+  - id: q2_cohort_candidates
+    title: Same-genre cohort candidates
+    param_types: {entity_id: wikidata_id, genres: genre_list, cohort_size: int}
+    sql: |
+      SELECT wikidata_id, page_title, genres
+      FROM cinesignal.entities
+      WHERE entity_type IN ('film', 'series')
+        AND wikidata_id != {{entity_id}}
+        AND hasAny(splitByChar(',', genres), {{genres}})
+      LIMIT {{cohort_size}}
+
+  - id: q3_cohort_monthly
+    title: Cohort monthly totals (percentile basis)
+    param_types: {cohort_ids: wikidata_id_list, start_date: date, end_date: date}
+    sql: |
+      SELECT wikidata_id, toStartOfMonth(date) AS month, sum(views) AS views
+      FROM cinesignal.entity_attention_daily
+      WHERE wikidata_id IN {{cohort_ids}}
+        AND date BETWEEN {{start_date}} AND {{end_date}}
+      GROUP BY wikidata_id, month
+      ORDER BY month, wikidata_id

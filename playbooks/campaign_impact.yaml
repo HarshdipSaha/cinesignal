@@ -1,0 +1,65 @@
+id: campaign_impact
+version: 1
+name: Campaign Impact
+description: >-
+  Event study on a marketing beat (trailer drop, casting news, release date
+  announcement, ...): abnormal attention lift vs. a same-genre cohort
+  counterfactual, decay half-life, and spillover to cast/franchise pages.
+
+steps:
+  - id: q1_event_window_series
+    title: Event-window attention series (target entity)
+    param_types: {entity_id: wikidata_id, window_start: date, window_end: date}
+    sql: |
+      SELECT date, sum(views) AS views
+      FROM cinesignal.entity_attention_daily
+      WHERE wikidata_id = {{entity_id}}
+        AND date BETWEEN {{window_start}} AND {{window_end}}
+      GROUP BY date
+      ORDER BY date
+
+  - id: q2_cohort_candidates
+    title: Same-genre cohort candidates
+    param_types: {entity_id: wikidata_id, genres: genre_list, cohort_size: int}
+    sql: |
+      SELECT wikidata_id, page_title, genres
+      FROM cinesignal.entities
+      WHERE entity_type IN ('film', 'series')
+        AND wikidata_id != {{entity_id}}
+        AND hasAny(splitByChar(',', genres), {{genres}})
+      LIMIT {{cohort_size}}
+
+  - id: q3_cohort_series
+    title: Cohort attention series (same calendar window)
+    param_types: {cohort_ids: wikidata_id_list, window_start: date, window_end: date}
+    sql: |
+      SELECT wikidata_id, date, sum(views) AS views
+      FROM cinesignal.entity_attention_daily
+      WHERE wikidata_id IN {{cohort_ids}}
+        AND date BETWEEN {{window_start}} AND {{window_end}}
+      GROUP BY wikidata_id, date
+      ORDER BY wikidata_id, date
+
+  - id: q4_spillover_candidates
+    title: Cast / crew spillover candidates
+    param_types: {entity_id: wikidata_id, spillover_limit: int}
+    sql: |
+      SELECT e.wikidata_id AS wikidata_id, e.page_title AS page_title, pr.category AS category, pr.ordering AS ordering
+      FROM cinesignal.imdb_principals AS pr
+      INNER JOIN cinesignal.entities AS tgt ON tgt.tconst = pr.tconst
+      INNER JOIN cinesignal.entities AS e ON e.nconst = pr.nconst AND e.entity_type = 'person'
+      WHERE tgt.wikidata_id = {{entity_id}}
+        AND pr.category IN ('actor', 'actress', 'director')
+      ORDER BY pr.ordering
+      LIMIT {{spillover_limit}}
+
+  - id: q5_spillover_series
+    title: Spillover-entity attention series
+    param_types: {spillover_ids: wikidata_id_list, window_start: date, window_end: date}
+    sql: |
+      SELECT wikidata_id, date, sum(views) AS views
+      FROM cinesignal.entity_attention_daily
+      WHERE wikidata_id IN {{spillover_ids}}
+        AND date BETWEEN {{window_start}} AND {{window_end}}
+      GROUP BY wikidata_id, date
+      ORDER BY wikidata_id, date

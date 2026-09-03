@@ -1,0 +1,46 @@
+id: launch_window
+version: 1
+name: Launch Window
+description: >-
+  Competition density per candidate release weekend in a target quarter,
+  cross-referenced against a 5-year seasonal genre demand curve, to rank
+  candidate release windows.
+
+steps:
+  - id: q1_competition_density
+    title: Competition density per candidate weekend
+    param_types: {quarter_start: date, quarter_end: date, genres: genre_list}
+    sql: |
+      SELECT
+          toMonday(release_date) AS weekend,
+          count() AS competitor_count,
+          groupArray(page_title) AS competitors,
+          groupArray(wikidata_id) AS competitor_ids
+      FROM cinesignal.entities
+      WHERE entity_type = 'film'
+        AND release_date IS NOT NULL
+        AND release_date BETWEEN {{quarter_start}} AND {{quarter_end}}
+      GROUP BY weekend
+      ORDER BY weekend
+
+  - id: q2_competitor_attention
+    title: Attention mass of competing releases (pre-release buzz)
+    param_types: {competitor_ids: wikidata_id_list, lookback_start: date, lookback_end: date}
+    sql: |
+      SELECT wikidata_id, sum(views) AS views
+      FROM cinesignal.entity_attention_daily
+      WHERE wikidata_id IN {{competitor_ids}}
+        AND date BETWEEN {{lookback_start}} AND {{lookback_end}}
+      GROUP BY wikidata_id
+
+  - id: q3_seasonal_genre_demand
+    title: Seasonal genre demand curve (weekly index, trailing years)
+    param_types: {genres: genre_list, lookback_start: date, lookback_end: date}
+    sql: |
+      SELECT toWeek(ead.date) AS week_of_year, avg(ead.views) AS avg_views, count() AS sample_days
+      FROM cinesignal.entity_attention_daily AS ead
+      INNER JOIN cinesignal.entities AS e ON e.wikidata_id = ead.wikidata_id
+      WHERE hasAny(splitByChar(',', e.genres), {{genres}})
+        AND ead.date BETWEEN {{lookback_start}} AND {{lookback_end}}
+      GROUP BY week_of_year
+      ORDER BY week_of_year
