@@ -1,0 +1,47 @@
+.stat-card {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 1.1rem 1.25rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.stat-card-accent {
+  border-color: var(--accent-dim);
+}
+.stat-card-accent::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: var(--accent);
+}
+
+.stat-card-label {
+  margin-bottom: 0.5rem;
+  color: var(--text-faint);
+}
+
+.stat-card-value {
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  font-size: 1.65rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.stat-card-unit {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--text-dim);
+}
+
+.stat-card-footnote {
+  margin-top: 0.4rem;
+  font-size: 0.72rem;
+  color: var(--text-faint);
+}

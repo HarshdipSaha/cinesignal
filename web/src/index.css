@@ -1,0 +1,228 @@
+:root {
+  color-scheme: dark;
+
+  /* -- surfaces -- */
+  --bg: #08080a;
+  --bg-raised: #111114;
+  --bg-raised-2: #17171b;
+  --bg-hover: #1d1d22;
+  --border: #26262c;
+  --border-soft: #1c1c21;
+
+  /* -- text -- */
+  --text: #eeece4;
+  --text-dim: #8d8d97;
+  --text-faint: #5b5b64;
+
+  /* -- accent: tungsten gate-lamp amber -- */
+  --accent: #f0a63c;
+  --accent-strong: #ffc773;
+  --accent-dim: #6b4c1e;
+  --accent-wash: rgba(240, 166, 60, 0.1);
+
+  /* -- secondary data color: scope-teal, used sparingly for a second series -- */
+  --teal: #49c9be;
+  --teal-wash: rgba(73, 201, 190, 0.12);
+
+  /* -- verdict semantics -- */
+  --good: #5fd68a;
+  --good-wash: rgba(95, 214, 138, 0.12);
+  --bad: #f2586b;
+  --bad-wash: rgba(242, 88, 107, 0.12);
+  --neutral: #9aa0ff;
+  --neutral-wash: rgba(154, 160, 255, 0.12);
+  --dim: #7b7b85;
+  --dim-wash: rgba(123, 123, 133, 0.14);
+
+  /* -- type -- */
+  --font-display: "Bebas Neue", "Arial Narrow", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "Cascadia Code", monospace;
+  --font-body: "IBM Plex Sans", system-ui, sans-serif;
+
+  --radius: 3px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  background-image:
+    radial-gradient(ellipse 1200px 800px at 15% -10%, rgba(240, 166, 60, 0.06), transparent 60%),
+    radial-gradient(ellipse 900px 700px at 100% 0%, rgba(73, 201, 190, 0.05), transparent 55%),
+    repeating-linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0.012) 0px,
+      rgba(255, 255, 255, 0.012) 1px,
+      transparent 1px,
+      transparent 3px
+    );
+  background-attachment: fixed;
+}
+
+a {
+  color: var(--accent-strong);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 400;
+  letter-spacing: 0.02em;
+  margin: 0;
+}
+
+code,
+pre {
+  font-family: var(--font-mono);
+}
+
+button {
+  font-family: var(--font-body);
+}
+
+::selection {
+  background: var(--accent-dim);
+  color: var(--accent-strong);
+}
+
+/* -- scrollbar: subdued, studio-appropriate -- */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bg-raised-2);
+  border-radius: 6px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--border);
+}
+
+/* ---------- shared utility classes ---------- */
+
+.mono {
+  font-family: var(--font-mono);
+}
+
+.card {
+  background: var(--bg-raised);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5em;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.65em 1.1em;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+}
+.btn:hover:not(:disabled) {
+  border-color: var(--accent-dim);
+  color: var(--accent-strong);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+.btn-primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #1a1204;
+  font-weight: 600;
+}
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  color: #1a1204;
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.03em;
+  padding: 0.15em 0.55em;
+  border-radius: 999px;
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  background: var(--bg-raised-2);
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-faint);
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--bg-raised) 25%,
+    var(--bg-raised-2) 37%,
+    var(--bg-raised) 63%
+  );
+  background-size: 400% 100%;
+  animation: shimmer 1.4s ease infinite;
+  border-radius: var(--radius);
+}
+@keyframes shimmer {
+  0% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

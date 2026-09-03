@@ -1,0 +1,34 @@
+.citation-body {
+  color: var(--text-dim);
+  font-size: 0.94rem;
+  line-height: 1.7;
+  margin: 0 0 1rem;
+}
+
+.citation-chip {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.68rem;
+  letter-spacing: 0.02em;
+  padding: 0.05em 0.4em;
+  margin: 0 0.15em;
+  border-radius: 3px;
+  border: 1px solid var(--accent-dim);
+  background: var(--accent-wash);
+  color: var(--accent-strong);
+  cursor: pointer;
+  vertical-align: 0.1em;
+  transition: background 0.12s ease, transform 0.12s ease;
+}
+.citation-chip:hover {
+  background: var(--accent-dim);
+  transform: translateY(-1px);
+}
+
+.citation-chip-dead {
+  border-color: var(--border);
+  background: var(--bg-raised-2);
+  color: var(--text-faint);
+  cursor: default;
+}

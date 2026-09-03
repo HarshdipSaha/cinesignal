@@ -1,0 +1,79 @@
+.memo-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.memo-breadcrumb {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  color: var(--text-faint);
+  font-size: 0.74rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+.memo-breadcrumb a {
+  color: var(--text-dim);
+}
+
+.memo-findings {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 0.9rem;
+}
+
+.memo-finding-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.memo-finding-evidence {
+  align-self: flex-start;
+  background: none;
+  border: none;
+  color: var(--accent-strong);
+  font-size: 0.7rem;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+  padding: 0 0.2rem;
+}
+.memo-finding-evidence:hover {
+  text-decoration: underline;
+}
+
+.memo-chart {
+  padding: 1.5rem 1.6rem;
+}
+
+.memo-sections {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.memo-section-heading {
+  font-size: 1.15rem;
+  color: var(--text);
+  margin-bottom: 0.6rem;
+}
+
+.memo-validator {
+  padding: 0.9rem 1.1rem;
+  font-size: 0.78rem;
+  color: var(--text-faint);
+}
+.memo-validator .eyebrow {
+  color: var(--text-faint);
+  margin-right: 0.5rem;
+}
+
+.spillover-row {
+  margin-top: 1.2rem;
+}
+.spillover-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}

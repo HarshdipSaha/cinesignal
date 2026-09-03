@@ -1,0 +1,87 @@
+.run-page {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.run-title {
+  font-size: 2.2rem;
+  margin: 0.2rem 0 0.3rem;
+}
+
+.run-entity {
+  color: var(--text-faint);
+  font-size: 0.78rem;
+  margin-bottom: 1.5rem;
+  word-break: break-all;
+}
+
+.run-form {
+  padding: 1.5rem 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+  max-width: 420px;
+}
+
+.run-form-hint {
+  margin: 0;
+  color: var(--text-dim);
+  font-size: 0.86rem;
+  line-height: 1.55;
+}
+
+.run-form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+.run-form-field input {
+  background: var(--bg-raised-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  color: var(--text);
+  padding: 0.6rem 0.75rem;
+  font-size: 0.88rem;
+  outline: none;
+}
+.run-form-field input:focus {
+  border-color: var(--accent);
+}
+
+.run-status-row {
+  margin: 0.5rem 0 1.25rem;
+}
+
+.run-pulse-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  margin-right: 0.45em;
+  display: inline-block;
+  animation: pulse-dot 1.1s ease-in-out infinite;
+}
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(0.7);
+  }
+}
+
+.run-error {
+  padding: 1rem 1.2rem;
+  border-color: var(--bad);
+  color: var(--bad);
+  margin-bottom: 1.25rem;
+  font-size: 0.88rem;
+}
+
+.run-timeline {
+  padding: 1.4rem 1.5rem;
+}

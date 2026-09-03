@@ -1,0 +1,61 @@
+.verdict {
+  border: 1px solid var(--border);
+  border-left-width: 4px;
+  border-radius: var(--radius);
+  padding: 1.4rem 1.6rem;
+  background: var(--bg-raised);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  animation: fade-up 0.35s ease both;
+}
+
+.verdict-badge {
+  display: inline-flex;
+  align-self: flex-start;
+  font-size: 0.72rem;
+  letter-spacing: 0.12em;
+  padding: 0.3em 0.7em;
+  border-radius: 999px;
+}
+
+.verdict-headline {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  color: var(--text);
+}
+
+.verdict-good {
+  border-left-color: var(--good);
+}
+.verdict-good .verdict-badge {
+  background: var(--good-wash);
+  color: var(--good);
+}
+
+.verdict-bad {
+  border-left-color: var(--bad);
+}
+.verdict-bad .verdict-badge {
+  background: var(--bad-wash);
+  color: var(--bad);
+}
+
+.verdict-neutral {
+  border-left-color: var(--neutral);
+}
+.verdict-neutral .verdict-badge {
+  background: var(--neutral-wash);
+  color: var(--neutral);
+}
+
+.verdict-dim {
+  border-left-color: var(--dim);
+}
+.verdict-dim .verdict-badge {
+  background: var(--dim-wash);
+  color: var(--dim);
+}
