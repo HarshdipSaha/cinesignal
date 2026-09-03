@@ -9,6 +9,8 @@ behind it.
 Built for the **Agentic Cinema: The Blockbuster Hackathon** (ClickHouse track).
 Full design spec: [`docs/plans/2026-08-24-cinesignal-spec.md`](docs/plans/2026-08-24-cinesignal-spec.md).
 
+**Live:** [live URL withheld until submission]
+
 ## Architecture
 
 ```
