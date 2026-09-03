@@ -21,11 +21,13 @@ steps:
     title: Same-genre cohort candidates
     param_types: {entity_id: wikidata_id, genres: genre_list, cohort_size: int}
     sql: |
-      SELECT wikidata_id, page_title, genres
-      FROM cinesignal.entities
-      WHERE entity_type IN ('film', 'series')
-        AND wikidata_id != {{entity_id}}
-        AND hasAny(splitByChar(',', genres), {{genres}})
+      SELECT e.wikidata_id, e.page_title, e.genres
+      FROM cinesignal.entities AS e
+      INNER JOIN (SELECT DISTINCT wikidata_id FROM cinesignal.entity_attention_daily) AS a
+        ON a.wikidata_id = e.wikidata_id
+      WHERE e.entity_type IN ('film', 'series')
+        AND e.wikidata_id != {{entity_id}}
+        AND hasAny(splitByChar(',', e.genres), {{genres}})
       LIMIT {{cohort_size}}
 
   - id: q3_cohort_monthly

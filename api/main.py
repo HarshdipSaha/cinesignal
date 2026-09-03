@@ -184,8 +184,9 @@ async def api_explore(entity_id: str, months: int = 36) -> dict[str, Any]:
         "AND date >= today() - INTERVAL {m:UInt16} MONTH GROUP BY date ORDER BY date",
         parameters={"m": months},
     )
+    genre_list = [g.strip() for g in (genres or "").split(",") if g.strip()]
     return {
-        "entity": {"wikidata_id": entity_id, "label": label, "entity_type": entity_type, "genres": genres, "release_date": str(release_date) if release_date else None},
+        "entity": {"wikidata_id": entity_id, "label": label, "entity_type": entity_type, "genres": genre_list, "release_date": str(release_date) if release_date else None},
         "series": [{"date": str(d), "views": int(v)} for d, v in series.result_rows],
     }
 
