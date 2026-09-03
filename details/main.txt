@@ -1,0 +1,281 @@
+https://agentic-cinema.devpost.com/
+Devpost
+Join a hackathon 
+Host a hackathon 
+Resources 
+12 
+harshdip-saha-ug23
+Notifications
+Loading...
+
+Agentic Cinema: The Blockbuster Hackathon
+Overview
+My projects
+Participants (8000)
+Resources
+Rules
+Project gallery
+Updates
+Discussions
+Agentic Cinema: The Blockbuster Hackathon
+Lights. Camera. Code.
+Edit project
+Create project
+Import from portfolio
+Who can participate
+Above legal age of majority in country of residence
+Specific countries/territories excluded 
+View full rules
+17 days to deadline
+View schedule
+
+Deadline
+
+10 Sept 2026 @ 2:30am GMT+5:30 
+Online
+Public
+$75,000 in cash	8000 participants
+Google
+Devpost icon rgb30px
+Managed by Devpost
+Databases Machine Learning/AI Open Ended
+🎬 Lights. Camera. Code.
+Calling all ecosystem architects and autonomous builders! Step onto the studio lot and transform real-world enterprise chaos into a seamless cinematic production with Gemini. Join Google Cloud and our elite, star-studded partner ecosystem for a first-of-its-kind Summer Blockbuster hackathon!
+
+In the era of Agentic AI, writing raw lines of code is just the background noise. The real magic happens when you orchestrate the system. Whether you want to play the visionary Director building production-ready autonomous agent networks, the Technical Producer connecting secure data pipelines via managed MCP servers, or the Studio Head enforcing Cloud IAM security and governance across multi-agent workflows—the backlot is yours.
+
+Vibe code with Gemini Enterprise and our leading partner technologies to cast the perfect enterprise tech stack and build the next generation of AI applications fit for the big screen.
+
+🌟 Why Join?
+
+Direct Your AI Crew: Get hands-on with Gemini Enterprise Agent Platform and cutting-edge partner tools to transition your local ideas into production-scale architectures.
+
+Walk the Red Carpet: Pitch your automated production workflows directly to executive judges, enterprise experts, and elite engineering leaders.
+
+🏆 The Box Office Prizes
+
+There are three identical prize buckets—one for each of our featured partner tracks. Instead of a single, crowded pool, you are competing directly within the specific "studio track" of your chosen partner technology.
+
+How to Secure the Greenlight:
+
+
+Cast Your Co-Star: Choose the partner platform that holds the data or application workflows your agent needs to interact with.
+
+Build with Gemini Enterprise: Build your agentic workflow on Google Cloud using the Gemini Enterprise Agent Platform. Connect to your partner tool using robust enterprise pipelines, API frameworks, or managed protocol adapters.
+
+Dominate Your Track: Show off a deterministic, multi-step agent that solves enterprise friction. You will be judged exclusively against other builders inside your chosen partner track.
+
+Requirements
+What to Build
+🎬 Build a functional agent—powered by Gemini and Google Cloud Agent Builder—that integrates a Partner Entity's product or MCP to power a real media & entertainment workflow.
+
+Partners:
+IBM
+Grafana Labs
+Parallel
+Clickhouse
+Replit
+Check out the full hackathon resources here.
+
+📋 Submission Requirements
+Include a URL to the hosted Project
+The 3-Minute Trailer (Demo Video): a demo video showing your project/agent functioning as built — not a cinematic trailer. Upload to YouTube or Vimeo, make it publicly visible, and make sure it's in English or includes English subtitles. 
+Include a URL to your open-source code repository for judging and testing on either GitHub, GitLab or Bitbucket. It must contain all source code, assets, and instructions needed to run, and must demonstrate actual runtime use of Google Cloud and your chosen Partner's service (imported and called in code, not just named in the README)
+The repository must be public and include a complete open source license file. This license should be detectable and visible at the top of the repository page (in the About section)
+Select which partner track you'll be submitting to
+Your completed Devpost submission form
+Read the full Official Rules for detailed partner track requirements and eligibility terms
+Prizes
+$75,000 in prizes
+IBM - 1st Place
+$7,500 in cash
+1 winner
+Opportunity for a social media promotion
+
+IBM - 2nd Place
+$4,500 in cash
+1 winner
+IBM - 3rd Place
+$3,000 in cash
+1 winner
+Grafana Labs - 1st Place
+$7,500 in cash
+1 winner
+Opportunity for a social media promotion
+
+Grafana Labs - 2nd Place
+$4,500 in cash
+1 winner
+Grafana Labs - 3rd Place
+$3,000 in cash
+1 winner
+Parallel - 1st Place
+$7,500 in cash
+1 winner
+Opportunity for a social media promotion
+
+Parallel - 2nd Place
+$4,500 in cash
+1 winner
+Parallel - 3rd Place
+$3,000 in cash
+1 winner
+Clickhouse - 1st Place
+$7,500 in cash
+1 winner
+Opportunity for a social media promotion
+
+Clickhouse - 2nd Place
+$4,500 in cash
+1 winner
+Clickhouse - 3rd Place
+$3,000 in cash
+1 winner
+Replit - 1st Place
+$7,500 in cash
+1 winner
+Opportunity for a social media promotion
+
+Replit - 2nd Place
+$4,500 in cash
+1 winner
+Replit - 3rd Place
+$3,000 in cash
+1 winner
+Devpost Achievements
+Submitting to this hackathon could earn you:
+
+
+First online hackathon
+
+X Hackathons
+ level 2
+
+Hackathon Winner
+ level 2
+
+Dual Boot
+
+Dual Boot Winner
+Judges
+Karan Sachdeva
+Karan Sachdeva
+IBM | Principal Global Lead, IBM Google Strategic Partnership
+
+Jay Talekar
+Jay Talekar
+IBM | STSM, watsonx Code Assistant
+
+Jeremy Breland
+Jeremy Breland
+Grafana Labs | Partner Architect
+
+Abhijeet Rajwade
+Abhijeet Rajwade
+Google | Specialist Customer Engineer, Infrastructure
+
+Pranay Reddy
+Pranay Reddy
+Parallel | Member of Technical Staff
+
+Nitin Kesarwani
+Nitin Kesarwani
+Parallel | Member of Technical Staff
+
+Gil Raphaelli
+Gil Raphaelli
+Clickhouse | Director of Engineering AI/ML
+
+Dustin Healy
+Dustin Healy
+Clickhouse | Full Stack Software Engineer AI/ML
+
+Mohamed El Kadiri El Hassani
+Mohamed El Kadiri El Hassani
+Google | Software Engineer
+
+Swetha Iyer
+Swetha Iyer
+Google | Product Manager
+
+Vaishali Narkhede
+Vaishali Narkhede
+Google | Software Engineering Manager, Cloud SQL
+
+Shikhar Mathur 
+Shikhar Mathur
+Google | Global Partnership Development Manager, Gen AI
+
+Surendra Patil
+Surendra Patil
+Google | Network Engineer, Google Distributed Cloud
+
+Hemanth Boinpally
+Hemanth Boinpally
+Google | Forward Deployed Engineer, Generative AI
+
+Devendra Dahiphale
+Devendra Dahiphale
+Google | Software Engineer, Infrastructure and Products Data Science
+
+Archana Atreya
+Archana Atreya
+Google | Staff Software Engineer, Play Ads
+
+Vanya Jauhal
+Vanya Jauhal
+Google | Sr Software Engineer, Search Intelligence
+
+Rishi Dabre
+Rishi Dabre
+Google | Software Engineer
+
+Judging Criteria
+Technological Implementation
+How well is the project built, and how effectively does it use Google Cloud and the Partner services as part of the solution?
+Design
+Does the project deliver a complete, coherent product experience not just a technical proof of concept?
+Potential Impact
+Does the project make a credible, specific case for solving a real problem for a real audience and does the solution actually address it based on what's demonstrated?
+Quality of the Idea
+Is this a creative, non-obvious use of Google Cloud and the Partner services and does the team show genuine understanding of the problem space?
+Looking for a team?
+Browse Participants or chat on Discord to find teammates.
+
+Find teammates on Discord
+To-dos
+ Join the Discord
+
+ Dismiss
+
+Questions? Email the hackathon manager
+
+Google Cloud IBM Grafana Parallel Clickhouse Replit
+This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.
+
+Messaging
+Devpost
+About
+Careers
+Contact
+Help
+Hackathons
+Browse hackathons
+Explore projects
+Host a hackathon
+Hackathon guides
+Portfolio
+Your projects
+Your hackathons
+Settings
+Connect
+ Twitter
+ Discord
+ Facebook
+ LinkedIn
+© 2026 Devpost, Inc. All rights reserved.
+Community guidelines
+Security
+CA notice
+Privacy policy
+Terms of service

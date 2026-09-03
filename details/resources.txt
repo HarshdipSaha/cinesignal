@@ -1,0 +1,127 @@
+Devpost
+Join a hackathon 
+Host a hackathon 
+Resources 
+12 
+harshdip-saha-ug23
+Notifications
+Loading...
+
+Agentic Cinema: The Blockbuster Hackathon
+Overview
+My projects
+Participants (8002)
+Resources
+Rules
+Project gallery
+Updates
+Discussions
+Agentic Cinema: Hackathon Resources Guide 
+Welcome to the backlot! Use this curated guide to find the documentation, SDKs, and code samples needed to build your agentic workflows and movie studio tools. All links have been verified for accuracy.
+
+The Challenge
+Your mission is to code a functional, production-ready AI agent or multi-agent network—powered by Gemini and Google Cloud Agent Builder—that integrates a Partner Entity's product or MCP server to solve critical bottlenecks across the entertainment and media value chain, specifically targeting the workflows of filmmakers, screenwriters, studio crews, or fans.
+
+🛠️ Phase 1: Core Frameworks & Environment
+Choose your building stage. Whether you want a managed, low-code interface or a fully custom SDK setup, begin here:
+
+Managed Setup: Gemini Enterprise Agent Platform API Setup — The central control panel for all Google Cloud agent configurations.
+The Low-Code Path: Agent Builder Guide — Best for rapid development using playbooks, managed grounding, and out-of-the-box data stores.
+Developer SDK: Gemini Enterprise Agent Platform SDK for Python — The client library required for writing custom agent logic, tool calls, and API integrations.
+Agent Starter Pack: Agent Engine Getting Started — Initialize your first custom agent backend.
+Cloud Access & Credits:
+Sign up for a no-cost trial at cloud.google.com/free.
+Use an existing account and request $100 in credits via Hackathon Credit Form (approved within 1–5 business days, while supplies last).
+ 
+🎬 Phase 2: Action Mechanisms & Data Connectivity (GenMedia Focus)
+Your agents need to "do" things (tools) and "know" things (grounding). Use these media-focused resources to process scripts, audio, and visual assets:
+
+📄 Script Processing & Document Grounding
+Document & PDF Analysis: Document Processing Guide — Learn how to parse complex PDF scripts, schedules, or box office reports.
+RAG with BigQuery: RAG Q&A with BigQuery & PDFs — Query script databases using LangChain and BigQuery Vector Search.
+Zero-Config Grounding: Agent Builder Data Stores Overview — Ground your agent apps using Vertex AI Search data stores.
+🎥 Video Analysis & VFX (Multimodal Storyboarding)
+Multimodal Introduction: Gemini Multimodal Use Cases — Learn to feed text, video, and audio simultaneously to Gemini.
+Comprehensive Video Transcription: Video Transcription Notebook — Generate timestamped transcriptions and speaker annotations from raw video clips.
+Video Asset Captioning: Video Captioning Notebook — Generate detailed metadata and descriptions to make video libraries searchable.
+Visual VFX Generation: Imagen 3 Image Generation Guide — Generate VFX mood boards, concept art, and storyboard panels from simple text prompts.
+🎵 Audio & Speech Generation (Lyria & Gemini TTS)
+Audio Generation (Lyria 3): Lyria 3 Music Generation Guide — Generate high-fidelity music clips, soundtracks, or sound effects across various genres.
+Speech Generation (Gemini TTS): Gemini 3.1 Flash TTS Tutorial — Convert text to expressive speech using prebuilt voices, and configure multi-speaker settings.
+Multi-Speaker Podcast Generator: Multi-Speaker Podcast Notebook — Generate multi-speaker dialogues, script reads, or discussions using Gemini and Speech APIs.
+Dialogue Sentiment Analysis: Multimodal Sentiment Analysis — Analyze actor reads or voiceovers by comparing audio tone against script text.
+ 
+
+ 
+🤝 Phase 3: Partner Integration & Infrastructure
+Connect your agents to external systems, developer tools, and operational metrics.
+
+IBM
+Grafana Labs
+Parallel
+Clickhouse
+Replit
+Replit credit codes request form
+ 
+
+ 
+🧠 Phase 4: Reasoning, State, & Logic Hosting 
+Complex cinematic workflows require state tracking, tool invocation, and managed hosting. We recommend building your agents natively using the Agent Development Kit (ADK) instead of external wrapper libraries:
+
+📦 ADK Installation
+Install the ADK and Agent Engine client libraries:
+
+pip install "google-cloud-aiplatform[agent_engines,adk]>=1.101.0"
+
+🤖 Native ADK & Agent Engine Tutorials
+ADK Introduction: Introduction to Agent Engine — Learn how to define Python functions as tools, wrap them in your agent, and serialize configurations natively.
+Deploying ADK Agents: Deploying ADK Agents to Agent Engine — Step-by-step instructions to deploy your ADK agent to a serverless Vertex AI environment from a local notebook or from source code.
+Live API Streaming (Bidirectional Audio): Live API on Agent Engine Tutorial — Connect ADK agents directly to the Gemini Live API WebSockets for low-latency voice interactions (e.g., interactive script rehearsal).
+API & Tool Integration (VFX Tooling): Google Maps Agent Tutorial — A blueprint for building an agent integrated with external tools, APIs, and image/satellite tools.
+Agentic Database Interaction: Model Context Protocol (MCP) Database Toolbox — Ground your agent and query SQL databases securely using the Model Context Protocol.
+🔌 Agent Tools & Function Calling
+Introduction to Function Calling: Introduction to Function Calling — Allow your agent to query scheduling APIs, write to databases, or trigger cloud tasks.
+Forced Agent Actions: Forced Function Calling Guide — Ensure your agent always queries safety checks or permissions before executing a command.
+Multimodal Tool Triggering: Multimodal Function Calling — Make your agent trigger database updates or email alerts directly from visual video cues.
+ 
+
+ 
+
+🚀 Phase 5: Deployment & Safety
+Get your production ready for the red carpet and protect the studio assets:
+
+Agent Deployment: Agent Builder Deployment Guide — Publish your agent as a web chat interface or a REST endpoint using environments.
+Logic Hosting: Cloud Run Quickstart — Fast, serverless deployment for custom agent backends, APIs, and tool servers.
+Studio Secrets: Secret Manager Guide — Securely store and retrieve API keys for your partner tools.
+Safety & Guardrails: Gemini Safety Settings — Configure moderation filters for hate speech, harassment, and unsafe creative outputs.
+ 
+ 
+Questions?
+For further questions about the hackathon, please post on the discussion forum or join us in Discord.
+
+Messaging
+Devpost
+About
+Careers
+Contact
+Help
+Hackathons
+Browse hackathons
+Explore projects
+Host a hackathon
+Hackathon guides
+Portfolio
+Your projects
+Your hackathons
+Settings
+Connect
+ Twitter
+ Discord
+ Facebook
+ LinkedIn
+© 2026 Devpost, Inc. All rights reserved.
+Community guidelines
+Security
+CA notice
+Privacy policy
+Terms of service
