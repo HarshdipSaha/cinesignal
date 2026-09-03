@@ -13,10 +13,10 @@
 
 steps:
   - name: "gcr.io/cloud-builders/docker"
-    args: ["build", "-t", "us-central1-docker.pkg.dev/$PROJECT_ID/cinesignal/api:$SHORT_SHA", "."]
+    args: ["build", "-t", "us-central1-docker.pkg.dev/$PROJECT_ID/cinesignal/api:$BUILD_ID", "."]
 
   - name: "gcr.io/cloud-builders/docker"
-    args: ["push", "us-central1-docker.pkg.dev/$PROJECT_ID/cinesignal/api:$SHORT_SHA"]
+    args: ["push", "us-central1-docker.pkg.dev/$PROJECT_ID/cinesignal/api:$BUILD_ID"]
 
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
     entrypoint: gcloud
@@ -24,16 +24,17 @@ steps:
       - run
       - deploy
       - cinesignal
-      - --image=us-central1-docker.pkg.dev/$PROJECT_ID/cinesignal/api:$SHORT_SHA
+      - --image=us-central1-docker.pkg.dev/$PROJECT_ID/cinesignal/api:$BUILD_ID
       - --region=us-central1
       - --platform=managed
       - --allow-unauthenticated
       - --set-env-vars=GOOGLE_CLOUD_PROJECT=$PROJECT_ID,GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_LOCATION=us-central1
       - --set-secrets=CLICKHOUSE_HOST=clickhouse-host:latest,CLICKHOUSE_PORT=clickhouse-port:latest,CLICKHOUSE_USER=clickhouse-user:latest,CLICKHOUSE_PASSWORD=clickhouse-password:latest
+      - --service-account=cinesignal-dev@$PROJECT_ID.iam.gserviceaccount.com
       - --min-instances=0
       - --max-instances=3
       - --memory=1Gi
       - --timeout=120
 
 images:
-  - "us-central1-docker.pkg.dev/$PROJECT_ID/cinesignal/api:$SHORT_SHA"
+  - "us-central1-docker.pkg.dev/$PROJECT_ID/cinesignal/api:$BUILD_ID"
