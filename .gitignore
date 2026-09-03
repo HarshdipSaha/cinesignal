@@ -11,3 +11,5 @@ web/dist/
 *.log
 .gcp/
 .playwright-mcp/
+docs/devpost-submission.md
+docs/demo-script.md
