@@ -143,7 +143,25 @@ LIMIT {limit} OFFSET {offset}
 
 
 def stage_a_pages(entity_type: str, checkpoint: dict):
-    """Generator yielding lists of {qid: tconst} dicts (one per stage-A page)."""
+    """Generator yielding (page, new_offset, is_last) tuples, one per
+    stage-A page. `page` is a {qid: tconst} dict.
+
+    IMPORTANT: this generator does NOT persist `new_offset`/done itself
+    (other than for its own internal error-skip recovery, which never
+    yields data). Persisting checkpoint progress for a *yielded* page is
+    the caller's responsibility, and must only happen after the caller
+    has successfully processed and inserted that page. Why: a Python
+    generator only resumes the code *after* `yield` when the caller asks
+    for the next item, so if the checkpoint save lived here (after
+    yield), it would only run once the caller comes back for page N+1 --
+    meaning any early `break` (e.g. --smoke-test) or an external kill of
+    the process right after page N was fully processed would lose page
+    N's already-completed progress, causing wasteful (though harmless,
+    thanks to entities being a ReplacingMergeTree) reprocessing on
+    resume. Having the caller persist `new_offset` itself, in the same
+    step where it confirms the page was inserted, makes "this page is
+    done" an atomic, immediately-durable fact instead of one deferred to
+    the next loop iteration."""
     stage = checkpoint.setdefault("main", {}).setdefault(entity_type, {})
     if stage.get("done"):
         return
@@ -177,21 +195,24 @@ def stage_a_pages(entity_type: str, checkpoint: dict):
         if not rows:
             stage["done"] = True
             save_checkpoint(CHECKPOINT_NAME, checkpoint)
-            break
+            return
 
         page = {}
         for row in rows:
             qid = qid_from_uri(row["item"]["value"])
             page[qid] = row["tconst"]["value"]
-        yield page
 
-        offset += len(rows)
-        stage["offset"] = offset
-        save_checkpoint(CHECKPOINT_NAME, checkpoint)
-        if len(rows) < limit:
-            stage["done"] = True
-            save_checkpoint(CHECKPOINT_NAME, checkpoint)
-            break
+        new_offset = offset + len(rows)
+        is_last = len(rows) < limit
+        yield page, new_offset, is_last
+
+        # Resumes here only once the caller asks for the next page, i.e.
+        # only after it has (per the contract above) already persisted
+        # new_offset/is_last for the page we just yielded. Safe to adopt
+        # as our own loop state and keep going.
+        offset = new_offset
+        if is_last:
+            return
         limit = PAGE_SIZE
 
 
@@ -384,7 +405,11 @@ COLUMNS = [
 
 
 def process_type(entity_type: str, client, checkpoint: dict, session: requests.Session, smoke_test: bool) -> int:
-    stage = checkpoint.setdefault("main", {}).get(entity_type, {})
+    # .setdefault (not .get!) so this is the SAME dict object stage_a_pages
+    # attaches to checkpoint["main"][entity_type] -- we write stage["offset"]
+    # directly below, and that write must land in the real checkpoint, not
+    # an orphaned copy.
+    stage = checkpoint.setdefault("main", {}).setdefault(entity_type, {})
     if stage.get("done"):
         log(f"[wikidata] {entity_type}: already complete per checkpoint")
         return checkpoint.get("counts", {}).get(entity_type, 0)
@@ -392,7 +417,7 @@ def process_type(entity_type: str, client, checkpoint: dict, session: requests.S
     total_inserted = checkpoint.get("counts", {}).get(entity_type, 0)
     log(f"[wikidata] {entity_type}: starting at stage-A offset={stage.get('offset', 0)}")
 
-    for page in stage_a_pages(entity_type, checkpoint):
+    for page, new_offset, is_last in stage_a_pages(entity_type, checkpoint):
         qids = list(page.keys())
         t0 = time.time()
 
@@ -423,6 +448,12 @@ def process_type(entity_type: str, client, checkpoint: dict, session: requests.S
                 client.insert("entities", batch, column_names=COLUMNS)
                 total_inserted += len(batch)
 
+        # Persist progress for THIS page now, in the same step that
+        # confirms it was inserted -- see stage_a_pages' docstring for why
+        # this must not be deferred to a later generator resumption.
+        stage["offset"] = new_offset
+        if is_last:
+            stage["done"] = True
         checkpoint.setdefault("counts", {})[entity_type] = total_inserted
         save_checkpoint(CHECKPOINT_NAME, checkpoint)
         log(
