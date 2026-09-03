@@ -7,7 +7,7 @@ from __future__ import annotations
 import uuid
 from typing import Any, Awaitable, Callable
 
-from agent.mcp_client import ClickHouseMCPSession, QueryResult
+from agent.mcp_client import ClickHouseMCPSession, QueryResult, get_shared_session, reset_shared_session
 from agent.models import Finding, ResolvedEntity, StepEvidence
 from agent.playbook_loader import Playbook, get_playbook
 from agent.sql_template import render
@@ -78,11 +78,14 @@ class PlaybookRunner:
 
         impl = _load_impl(playbook_id)
 
-        async with ClickHouseMCPSession() as session:
-            ctx = PlaybookContext(playbook, session, memo_id, on_event)
-            if on_event:
-                await on_event("stage", {"stage": "querying", "message": f"Running {playbook.name} v{playbook.version}"})
-            findings, chart_data, verdict = await impl.run(entity, params, ctx)
+        session = await get_shared_session()
+        ctx = PlaybookContext(playbook, session, memo_id, on_event)
+        if on_event:
+            await on_event("stage", {"stage": "querying", "message": f"Running {playbook.name} v{playbook.version}"})
+        findings, chart_data, verdict = await impl.run(entity, params, ctx)
+
+        if any(e.error for e in ctx.evidence):
+            await reset_shared_session()
 
         return ctx.evidence, findings, chart_data, verdict
 

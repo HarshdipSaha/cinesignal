@@ -1,17 +1,18 @@
 """Runtime wiring to the official `mcp-clickhouse` MCP server.
 
-Two consumers, both hitting the SAME server/protocol at runtime:
+`ClickHouseMCPSession` is a thin async wrapper around the raw MCP
+`ClientSession` (stdio transport) — used by the deterministic
+`PlaybookRunner` (agent/runner.py) and by `agent/resolver.py`'s search
+query. No LLM is in this path for SQL execution; determinism is the point.
+Tracks per-query `query_id`/`elapsed_ms`/`rows_scanned` for the evidence
+chain (API §6).
 
-1. `ClickHouseMCPSession` — a thin async wrapper around the raw MCP
-   `ClientSession` (stdio transport). Used by the deterministic
-   `PlaybookRunner` (agent/runner.py) to execute versioned SQL templates.
-   No LLM is in this path; determinism is the point. Tracks per-query
-   `query_id`/`elapsed_ms`/`rows_scanned` for the evidence chain (API §6).
-
-2. `build_mcp_toolset()` — wraps the same server as a google-adk
-   `McpToolset`, for use by the `LlmAgent`-based EntityResolver
-   (agent/resolver.py), which genuinely needs an LLM to judge which
-   candidate row is the right match.
+`get_shared_session()` hands out ONE long-lived session, reused across
+every request in the process, instead of every caller spawning its own.
+Spawning a fresh mcp-clickhouse subprocess per request measured at 1-13s
+of pure startup overhead in production (worse under Cloud Run's
+constrained cold-start CPU) — verified live, this was the dominant cost
+in a "search feels slow" complaint, not the actual ClickHouse query.
 
 Response format note: `run_query` returns one text content block whose text
 is JSON `{"columns": [...], "rows": [[...], ...]}` — verified against a live
@@ -20,6 +21,7 @@ call against the ClickHouse Cloud cluster during the Gate-0 smoke test
 """
 from __future__ import annotations
 
+import asyncio
 import json
 import os
 import sys
@@ -49,6 +51,13 @@ def _clickhouse_env() -> dict[str, str]:
     # also refuse writes/drops at the MCP-server level regardless of grants.
     env["CLICKHOUSE_ALLOW_WRITE_ACCESS"] = "false"
     env["CLICKHOUSE_ALLOW_DROP"] = "false"
+    # mcp-clickhouse's default (30s) turned out too tight in production: the
+    # ingestion pipeline runs unattended against the same cluster and its
+    # bulk inserts occasionally starve concurrent reads for longer than
+    # that (observed live: a resolve() search that normally takes ~0.3s hit
+    # the 30s timeout during heavy ingest activity). Give queries more room
+    # to survive that contention rather than hard-failing the whole request.
+    env.setdefault("CLICKHOUSE_MCP_QUERY_TIMEOUT", "90")
     return env
 
 
@@ -186,14 +195,64 @@ class ClickHouseMCPSession:
         return QueryResult(query_id, sql, columns, rows, elapsed_ms, rows_scanned)
 
 
-def build_mcp_toolset(tool_filter: list[str] | None = None):
-    """google-adk McpToolset wired to the same mcp-clickhouse server, for
-    LLM-driven tool use (EntityResolver's candidate search). Imported lazily
-    so this module stays importable before google-adk/ADC are configured."""
-    from google.adk.tools.mcp_tool import McpToolset
-    from google.adk.tools.mcp_tool.mcp_session_manager import StdioConnectionParams
+_shared_session: ClickHouseMCPSession | None = None
+_shared_loop: asyncio.AbstractEventLoop | None = None
+_shared_lock: asyncio.Lock | None = None
 
-    return McpToolset(
-        connection_params=StdioConnectionParams(server_params=clickhouse_server_params(), timeout=30),
-        tool_filter=tool_filter or ["run_query", "list_databases", "list_tables"],
-    )
+
+def _lock_for_current_loop() -> asyncio.Lock:
+    """A fresh asyncio.Lock per event loop. Needed because this singleton
+    also has to survive multiple asyncio.run() calls in one process (every
+    test in tests/test_golden_memos.py, any script run repeatedly) — each
+    asyncio.run() spins up and tears down its OWN event loop, and both the
+    session's transport and a plain asyncio.Lock are loop-bound; reusing
+    either across loops raised real errors here (RuntimeError: Attempted to
+    exit cancel scope in a different task than it was entered in), verified
+    live via pytest. A single long-running server process (uvicorn) only
+    ever has one loop, so this never fires there — it's here for the
+    multi-asyncio.run() case."""
+    global _shared_lock, _shared_loop
+    loop = asyncio.get_running_loop()
+    if _shared_lock is None or _shared_loop is not loop:
+        _shared_lock = asyncio.Lock()
+    return _shared_lock
+
+
+async def get_shared_session() -> ClickHouseMCPSession:
+    """The one process-wide mcp-clickhouse session for the CURRENT event
+    loop. Created lazily on first use, then reused for the life of that
+    loop (see _lock_for_current_loop for why "loop" and not just
+    "process")."""
+    global _shared_session, _shared_loop
+    lock = _lock_for_current_loop()
+    async with lock:
+        loop = asyncio.get_running_loop()
+        if _shared_session is None or _shared_loop is not loop:
+            session = ClickHouseMCPSession()
+            await session.__aenter__()
+            _shared_session = session
+            _shared_loop = loop
+    return _shared_session
+
+
+async def reset_shared_session() -> None:
+    """Drop the shared session so the next get_shared_session() spawns a
+    fresh one. Call this after a run_query() that came back with `.error`
+    set — that's ambiguous between "the SQL was bad" and "the subprocess/
+    pipe died", and respawning is cheap enough that it's not worth telling
+    those apart precisely: a live session never pays this cost, only the
+    (rare) error path does.
+
+    Deliberately does NOT call the session's __aexit__/graceful-close path:
+    anyio's cancel scopes are bound to the task that entered them, and
+    get_shared_session() was awaited inside whatever request task happened
+    to create it first — a *different* task calling __aexit__ later (which
+    is exactly what "reset from an error handler" means) hits anyio's
+    "Attempted to exit cancel scope in a different task than it was entered
+    in", verified live. Dropping the reference instead leaks the orphaned
+    subprocess (it exits on its own once its stdin pipe closes) rather than
+    risking that crash on a request path — an acceptable trade for a reset
+    path that should rarely fire."""
+    global _shared_session
+    async with _lock_for_current_loop():
+        _shared_session = None

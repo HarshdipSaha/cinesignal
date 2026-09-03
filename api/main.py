@@ -48,7 +48,13 @@ def _resolve_playbook_id(raw: str) -> str:
 async def api_resolve(q: str, entity_type: str | None = None) -> dict[str, Any]:
     if not q or not q.strip():
         raise HTTPException(400, "q is required")
-    best, candidates = await resolver.resolve(q.strip(), entity_type)
+    try:
+        best, candidates = await resolver.resolve(q.strip(), entity_type)
+    except resolver.ResolverError as exc:
+        # Most often a transient ClickHouse timeout under heavy concurrent
+        # ingest load (verified live) -- 503 + a clean message beats an
+        # unhandled 500 with a Python traceback in the response body.
+        raise HTTPException(503, f"search is temporarily unavailable, please retry: {exc}") from exc
     return {
         "best_match": best.model_dump() if best else None,
         "candidates": [c.model_dump() for c in candidates],

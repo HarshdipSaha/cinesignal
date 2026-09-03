@@ -12,7 +12,7 @@ from pydantic import BaseModel, Field
 
 from agent.config import FLASH_MODEL
 from agent.llm import run_structured
-from agent.mcp_client import ClickHouseMCPSession
+from agent.mcp_client import get_shared_session, reset_shared_session
 from agent.models import ResolvedEntity
 from agent.sql_template import bind_search_text
 
@@ -75,10 +75,11 @@ async def resolve(query: str, entity_type: str | None = None) -> tuple[ResolvedE
     candidates is non-empty, the caller should present candidates for disambiguation."""
     sql = SEARCH_SQL_TEMPLATE.format(query=bind_search_text(query)).strip()
 
-    async with ClickHouseMCPSession() as session:
-        result = await session.run_query(sql, query_id=f"resolve:{query[:40]}")
+    session = await get_shared_session()
+    result = await session.run_query(sql, query_id=f"resolve:{query[:40]}")
 
     if result.error:
+        await reset_shared_session()
         raise ResolverError(result.error)
 
     candidates = [_row_to_candidate(r) for r in result.rows]
@@ -123,8 +124,10 @@ async def get_by_id(wikidata_id: str) -> ResolvedEntity | None:
         "FROM cinesignal.entities WHERE wikidata_id = "
         f"{bind_wikidata_id(wikidata_id)} LIMIT 1"
     )
-    async with ClickHouseMCPSession() as session:
-        result = await session.run_query(sql, query_id=f"lookup:{wikidata_id}")
+    session = await get_shared_session()
+    result = await session.run_query(sql, query_id=f"lookup:{wikidata_id}")
+    if result.error:
+        await reset_shared_session()
     if result.error or not result.rows:
         return None
     return _to_resolved(_row_to_candidate(result.rows[0]))
