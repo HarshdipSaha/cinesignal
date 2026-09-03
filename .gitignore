@@ -4,3 +4,9 @@ __pycache__/
 venv/
 env/
 .DS_Store
+ingest/.cache/
+ingest/.checkpoints/
+web/node_modules/
+web/dist/
+*.log
+.gcp/

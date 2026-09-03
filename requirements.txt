@@ -1,0 +1,16 @@
+fastapi[standard]
+uvicorn[standard]
+google-genai
+google-adk
+mcp
+python-dotenv
+mcp-clickhouse
+clickhouse-connect
+pyyaml
+pydantic
+httpx
+tqdm
+requests
+orjson
+pytest
+pytest-asyncio
