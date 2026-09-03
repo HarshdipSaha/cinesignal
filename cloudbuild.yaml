@@ -1,0 +1,39 @@
+# Builds the container and deploys to Cloud Run. ClickHouse credentials are
+# pulled from Secret Manager at deploy time (spec §2) — nothing but
+# GOOGLE_CLOUD_PROJECT is baked into the image or committed to the repo.
+#
+# One-time setup (run manually, NOT part of this pipeline):
+#   gcloud secrets create clickhouse-host     --data-file=<(printf '%s' "$CLICKHOUSE_HOST")
+#   gcloud secrets create clickhouse-port     --data-file=<(printf '%s' "$CLICKHOUSE_PORT")
+#   gcloud secrets create clickhouse-user     --data-file=<(printf '%s' "$CLICKHOUSE_USER")
+#   gcloud secrets create clickhouse-password --data-file=<(printf '%s' "$CLICKHOUSE_PASSWORD")
+#   # grant the Cloud Run runtime service account secretAccessor on each
+#
+# Run with: gcloud builds submit --config cloudbuild.yaml
+
+steps:
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "us-central1-docker.pkg.dev/$PROJECT_ID/cinesignal/api:$SHORT_SHA", "."]
+
+  - name: "gcr.io/cloud-builders/docker"
+    args: ["push", "us-central1-docker.pkg.dev/$PROJECT_ID/cinesignal/api:$SHORT_SHA"]
+
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk"
+    entrypoint: gcloud
+    args:
+      - run
+      - deploy
+      - cinesignal
+      - --image=us-central1-docker.pkg.dev/$PROJECT_ID/cinesignal/api:$SHORT_SHA
+      - --region=us-central1
+      - --platform=managed
+      - --allow-unauthenticated
+      - --set-env-vars=GOOGLE_CLOUD_PROJECT=$PROJECT_ID,GOOGLE_GENAI_USE_VERTEXAI=TRUE,GOOGLE_CLOUD_LOCATION=us-central1
+      - --set-secrets=CLICKHOUSE_HOST=clickhouse-host:latest,CLICKHOUSE_PORT=clickhouse-port:latest,CLICKHOUSE_USER=clickhouse-user:latest,CLICKHOUSE_PASSWORD=clickhouse-password:latest
+      - --min-instances=0
+      - --max-instances=3
+      - --memory=1Gi
+      - --timeout=120
+
+images:
+  - "us-central1-docker.pkg.dev/$PROJECT_ID/cinesignal/api:$SHORT_SHA"
