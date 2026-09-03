@@ -135,26 +135,26 @@ class ClickHouseMCPSession:
         return self._direct
 
     async def _lookup_rows_scanned(self, sql: str) -> int | None:
-        """Best-effort display enrichment ONLY — never on the execution
-        path, never affects correctness. system.query_log flushes
-        asynchronously so this may legitimately find nothing in time."""
+        """Best-effort display enrichment ONLY — never on the execution path,
+        never affects correctness (the MCP call above already has the real
+        result rows). Originally polled system.query_log for read_rows, but
+        that flushes asynchronously on ClickHouse Cloud (longer than made
+        sense to block on) and was silently returning nothing — verified
+        live: rows_scanned was landing as 0 in the UI, reading as "broken"
+        rather than "not scanned much". clickhouse-connect exposes read_rows
+        synchronously in the HTTP response summary instead, no flush-interval
+        race — re-running the query direct (not via MCP) is an extra round
+        trip, but a reliable one, only paid on the one "headline" query per
+        playbook run that gets enrich=True."""
         import asyncio
 
         client = self._direct_client()
-        for _ in range(4):
-            await asyncio.sleep(0.5)
-            try:
-                res = client.query(
-                    "SELECT read_rows FROM system.query_log "
-                    "WHERE type = 'QueryFinish' AND query = {q:String} "
-                    "ORDER BY event_time_microseconds DESC LIMIT 1",
-                    parameters={"q": sql.strip()},
-                )
-                if res.result_rows:
-                    return int(res.result_rows[0][0])
-            except Exception:  # noqa: BLE001
-                return None
-        return None
+        try:
+            result = await asyncio.to_thread(client.query, sql)
+        except Exception:  # noqa: BLE001
+            return None
+        read_rows = (result.summary or {}).get("read_rows")
+        return int(read_rows) if read_rows is not None else None
 
     async def run_query(self, sql: str, query_id: str, enrich_scan_stats: bool = False) -> QueryResult:
         assert self.session is not None, "session not started — use `async with`"

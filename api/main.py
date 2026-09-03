@@ -11,7 +11,7 @@ from typing import Any
 
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import StreamingResponse
+from fastapi.responses import FileResponse, StreamingResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
@@ -191,6 +191,22 @@ async def health() -> dict[str, str]:
 
 # Serve the built SPA in production (web/dist), if present. Dev mode runs
 # the Vite dev server separately (see web/README / package.json scripts).
+#
+# StaticFiles(html=True) alone only serves exact file matches (plus "/" ->
+# index.html) — it 404s on client-side routes like /memo/:id, which breaks
+# on any page refresh or shared/deep link (confirmed live: 404 on
+# /memo/<real id>). So assets are mounted at their own sub-path, and every
+# other non-API path falls through to a catch-all that serves index.html
+# and lets React Router take over client-side.
 _SPA_DIST = ROOT / "web" / "dist"
 if _SPA_DIST.exists():
-    app.mount("/", StaticFiles(directory=str(_SPA_DIST), html=True), name="spa")
+    app.mount("/assets", StaticFiles(directory=str(_SPA_DIST / "assets")), name="spa-assets")
+
+    @app.get("/{full_path:path}")
+    async def spa_fallback(full_path: str):
+        if full_path.startswith("api/"):
+            raise HTTPException(404, f"no such API route: /{full_path}")
+        candidate = _SPA_DIST / full_path
+        if full_path and candidate.is_file():
+            return FileResponse(candidate)
+        return FileResponse(_SPA_DIST / "index.html")
